@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kbot.fullname" . }}
+  labels:
+    {{- include "kbot.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "kbot.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "kbot.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "kbot.serviceAccountName" . }}
+      containers:
+        - name: "{{ .Release.Name }}"
+          image: "{{ .Values.image.repository }}/{{ .Chart.Name }}:{{ .Values.image.tag }}-{{ .Values.image.arch | default "amd64" }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          args:
+            - "kbot"
+          env:
+            - name: TELE_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .Values.teleToken.secretName }}"
+                  key: "{{ .Values.teleToken.secretKey }}"
