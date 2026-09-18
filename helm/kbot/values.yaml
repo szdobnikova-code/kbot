@@ -8,8 +8,8 @@ image:
   arch: amd64
   pullPolicy: IfNotPresent
 
-secret:
-  TELE_TOKEN: ""
+telegram:
+  secretName: kbot-secret
 
 serviceAccount:
   create: true

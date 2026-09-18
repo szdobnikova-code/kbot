@@ -25,7 +25,7 @@ spec:
             - name: TELE_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: "{{ .Release.Name }}"
+                  name: "{{ .Values.telegram.secretName }}"
                   key: TELE_TOKEN
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
