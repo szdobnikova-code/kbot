@@ -196,3 +196,28 @@ v1.0.0
 ├── main.go
 └── README.md
 ```
+
+## CI/CD Workflow
+
+The project uses GitHub Actions for continuous integration and delivery.
+
+```mermaid
+flowchart LR
+    A[Push to develop] --> B[GitHub Actions]
+    B --> C[Run Tests]
+    C --> D[Build Docker Image]
+    D --> E[Build linux/amd64 + linux/arm64]
+    E --> F[Push Image to GHCR]
+    F --> G[Update Helm Image Tag]
+    G --> H[Commit to develop]
+    H --> I[ArgoCD Auto Sync]
+    I --> J[Kubernetes]
+    J --> K[Telegram Bot]
+```
+
+The production image is built for `linux/amd64` as required. An additional
+`linux/arm64` platform is included to support local Kubernetes deployment
+on Apple Silicon.
+
+ArgoCD monitors the `develop` branch and automatically synchronizes changes
+from the Helm chart with the Kubernetes cluster.
