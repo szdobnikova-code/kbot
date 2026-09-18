@@ -1,23 +1,28 @@
-APP=${shell basename $(shell git remote get-url origin)}
-REGISTRY=szdobnikova91
+APP=kbot
+REGISTRY=ghcr.io
+REPOSITORY=szdobnikova-code/kbot
+
 VERSION=$(shell git describe --tags --abbrev=0)-$(shell git rev-parse --short HEAD)
-TARGETOS=linux #linux darwin windows
-TARGETARCH=arm64 #amd64
+
+TARGETOS=linux
+TARGETARCH=amd64
+
+IMAGE=${REGISTRY}/${REPOSITORY}:${VERSION}-${TARGETOS}-${TARGETARCH}
 
 format:
 	gofmt -s -w ./
 
 get:
-	go get	
+	go get
 
 lint:
-	golint 
+	golint
 
 test:
-	go test -v		
+	go test -v
 
 build: format
-	CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -v -o kbot -ldflags "-X"=github.com/szdobnikova-code/kbot/cmd.appVersion=${VERSION}
+	CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -v -o kbot -ldflags "-X=github.com/szdobnikova-code/kbot/cmd.appVersion=${VERSION}"
 
 linux:
 	$(MAKE) build TARGETOS=linux TARGETARCH=amd64
@@ -32,11 +37,14 @@ windows:
 	$(MAKE) build TARGETOS=windows TARGETARCH=amd64
 
 image:
-	docker build -t ${REGISTRY}/${APP}:${VERSION}-${TARGETARCH} .
-
+	docker build \
+		--build-arg TARGETOS=${TARGETOS} \
+		--build-arg TARGETARCH=${TARGETARCH} \
+		--build-arg VERSION=${VERSION} \
+		-t ${IMAGE} .
 push:
-	docker push ${REGISTRY}/${APP}:${VERSION}-${TARGETARCH}
+	docker push ${IMAGE}
 
 clean:
-	rm -rf kbot
-	docker rmi ${REGISTRY}/${APP}:${VERSION}-${TARGETARCH}
+	rm -f kbot
+	docker rmi ${IMAGE} || true

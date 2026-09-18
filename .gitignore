@@ -1,0 +1,5 @@
+
+# Local artifacts
+.idea/
+*.tgz
+release-notes.md
