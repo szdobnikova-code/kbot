@@ -206,7 +206,7 @@ flowchart LR
     A[Push to develop] --> B[GitHub Actions]
     B --> C[Run Tests]
     C --> D[Build Docker Image]
-    D --> E[Build linux/amd64 + linux/arm64]
+    D --> E[Build linux/amd64]
     E --> F[Push Image to GHCR]
     F --> G[Update Helm Image Tag]
     G --> H[Commit to develop]
@@ -215,9 +215,7 @@ flowchart LR
     J --> K[Telegram Bot]
 ```
 
-The production image is built for `linux/amd64` as required. An additional
-`linux/arm64` platform is included to support local Kubernetes deployment
-on Apple Silicon.
+The production image is built for `linux/amd64` as required.
 
 ArgoCD monitors the `develop` branch and automatically synchronizes changes
 from the Helm chart with the Kubernetes cluster.
