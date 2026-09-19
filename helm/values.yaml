@@ -1,0 +1,5 @@
+image:
+  repository: "szdobnikova-code"
+  tag: "v1.0.2-fe4787a"
+  os: linux
+  arch: amd64

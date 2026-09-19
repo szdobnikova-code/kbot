@@ -59,13 +59,14 @@ jobs:
       - name: Update Helm image tag
         run: |
           sed -i "s|^  tag:.*|  tag: ${VERSION}|" helm/kbot/values.yaml
+          sed -i "s|^  tag:.*|  tag: \"${VERSION}\"|" helm/values.yaml
 
       - name: Commit Helm tag
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add helm/kbot/values.yaml
+          git add helm/kbot/values.yaml helm/values.yaml
 
           if git diff --cached --quiet; then
             echo "Helm tag is already up to date"
