@@ -23,4 +23,15 @@ pipeline {
             description: 'Skip running linter'
         )
     }
+
+    stages {
+        stage('Build Parameters') {
+            steps {
+                echo "OS: ${params.OS}"
+                echo "ARCH: ${params.ARCH}"
+                echo "SKIP_TESTS: ${params.SKIP_TESTS}"
+                echo "SKIP_LINT: ${params.SKIP_LINT}"
+            }
+        }
+    }
 }
