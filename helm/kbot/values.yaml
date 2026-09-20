@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   registry: ghcr.io
   repository: szdobnikova-code/kbot
-  tag: v1.0.2-afa76f7
+  tag: v1.0.2-afe5642
   os: linux
   arch: amd64
   pullPolicy: IfNotPresent
