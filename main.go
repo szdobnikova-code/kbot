@@ -5,6 +5,7 @@ package main
 
 import "github.com/szdobnikova-code/kbot/cmd"
 
+// Entry point for the kbot application.
 func main() {
 	cmd.Execute()
 }
