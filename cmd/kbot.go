@@ -6,9 +6,12 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"time"
 
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/spf13/cobra"
 	telebot "gopkg.in/telebot.v4"
 )
@@ -16,6 +19,11 @@ import (
 var (
 	// TeleToken bot
 	TeleToken = os.Getenv("TELE_TOKEN")
+
+	messagesTotal = prometheus.NewCounter(prometheus.CounterOpts{
+		Name: "kbot_messages_total",
+		Help: "Total number of text messages received by kbot.",
+	})
 )
 
 // kbotCmd represents the kbot command
@@ -33,6 +41,15 @@ to quickly create a Cobra application.`,
 
 		fmt.Printf("kbot %s started", appVersion)
 
+		prometheus.MustRegister(messagesTotal)
+		go func() {
+			http.Handle("/metrics", promhttp.Handler())
+			log.Println("Prometheus metrics available on :8080/metrics")
+			if err := http.ListenAndServe(":8080", nil); err != nil {
+				log.Printf("metrics server stopped: %v", err)
+			}
+		}()
+
 		kbot, err := telebot.NewBot(telebot.Settings{
 			URL:    "",
 			Token:  TeleToken,
@@ -45,6 +62,8 @@ to quickly create a Cobra application.`,
 		}
 
 		kbot.Handle(telebot.OnText, func(m telebot.Context) error {
+
+			messagesTotal.Inc()
 
 			log.Printf(m.Message().Payload, m.Text())
 
