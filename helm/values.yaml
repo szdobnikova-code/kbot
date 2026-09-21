@@ -1,5 +1,5 @@
 image:
   repository: "szdobnikova-code"
-  tag: "v1.0.2-c5ed834"
+  tag: "v1.0.2-bf454c4"
   os: linux
   arch: amd64
